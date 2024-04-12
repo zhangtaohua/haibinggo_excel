@@ -1,0 +1,91 @@
+// Package routes 注册路由
+package routes
+
+import (
+	controllers "haibinggo/app/http/controllers/api/v1"
+	"haibinggo/app/http/controllers/api/v1/auth"
+	"haibinggo/app/http/middlewares"
+	"haibinggo/pkg/config"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+// RegisterAPIRoutes 注册 API 相关路由
+func RegisterAPIRoutes(r *gin.Engine) {
+
+	r.StaticFS("uploads", http.Dir("./public/uploads"))
+
+	// 测试一个 v1 的路由组，我们所有的 v1 版本的路由都将存放到这里
+	var v1 *gin.RouterGroup
+	if len(config.Get("app.api_domain")) == 0 {
+		v1 = r.Group("/api/v1")
+	} else {
+		v1 = r.Group("/v1")
+	}
+
+	// 全局限流中间件：每小时限流。这里是所有 API （根据 IP）请求加起来。
+	// 作为参考 Github API 每小时最多 60 个请求（根据 IP）。
+	// 测试时，可以调高一点。
+	v1.Use(middlewares.LimitIP("2000-H"))
+
+	{
+		v1.StaticFS("/uploads", http.Dir("./public/uploads"))
+		// v1.Static("/uploads", "./public/uploads")
+
+		authGroup := v1.Group("/auth")
+		// 限流中间件：每小时限流，作为参考 Github API 每小时最多 60 个请求（根据 IP）
+		// 测试时，可以调高一点
+		authGroup.Use(middlewares.LimitIP("2000-H"))
+		{
+			// 登录
+			lgc := new(auth.LoginController)
+			authGroup.POST("/login/using-phone", middlewares.GuestJWT(), lgc.LoginByPhone)
+			authGroup.POST("/login/using-password", middlewares.GuestJWT(), lgc.LoginByPassword)
+			authGroup.POST("/login/refresh-token", middlewares.AuthJWT(), lgc.RefreshToken)
+
+			// 重置密码
+			pwc := new(auth.PasswordController)
+			authGroup.POST("/password-reset/using-email", middlewares.GuestJWT(), pwc.ResetByEmail)
+			authGroup.POST("/password-reset/using-phone", middlewares.GuestJWT(), pwc.ResetByPhone)
+
+			// 注册用户
+			suc := new(auth.SignupController)
+			authGroup.POST("/signup/using-phone", middlewares.GuestJWT(), suc.SignupUsingPhone)
+			authGroup.POST("/signup/using-email", middlewares.GuestJWT(), suc.SignupUsingEmail)
+			authGroup.POST("/signup/using-phone-email", suc.SignupUsingPhoneEmail)
+			authGroup.POST("/signup/phone/exist", middlewares.GuestJWT(), middlewares.LimitPerRoute("60-H"), suc.IsPhoneExist)
+			authGroup.POST("/signup/email/exist", middlewares.GuestJWT(), middlewares.LimitPerRoute("60-H"), suc.IsEmailExist)
+
+			// 发送验证码
+			vcc := new(auth.VerifyCodeController)
+			authGroup.POST("/verify-codes/phone", middlewares.LimitPerRoute("20-H"), vcc.SendUsingPhone)
+			authGroup.POST("/verify-codes/email", middlewares.LimitPerRoute("20-H"), vcc.SendUsingEmail)
+			// 图片验证码
+			authGroup.POST("/verify-codes/captcha", middlewares.LimitPerRoute("50-H"), vcc.ShowCaptcha)
+		}
+
+		uc := new(controllers.UsersController)
+		// 获取当前用户
+		v1.GET("/user", middlewares.AuthJWT(), uc.CurrentUser)
+		usersGroup := v1.Group("/users")
+		{
+			usersGroup.GET("", uc.Index)
+			usersGroup.PUT("", middlewares.AuthJWT(), uc.UpdateProfile)
+			usersGroup.PUT("/email", middlewares.AuthJWT(), uc.UpdateEmail)
+			usersGroup.PUT("/phone", middlewares.AuthJWT(), uc.UpdatePhone)
+			usersGroup.PUT("/password", middlewares.AuthJWT(), uc.UpdatePassword)
+			usersGroup.PUT("/avatar", middlewares.AuthJWT(), uc.UpdateAvatar)
+		}
+
+		excelDc := new(controllers.ExcelsController)
+		excelGroup := v1.Group("/excels")
+		{
+			excelGroup.GET("", middlewares.AuthJWT(), excelDc.Index)
+			excelGroup.POST("", middlewares.AuthJWT(), excelDc.Store)
+			excelGroup.PATCH("/:table/:row", middlewares.AuthJWT(), excelDc.Update)
+			excelGroup.DELETE("/:table/:row", middlewares.AuthJWT(), excelDc.Delete)
+			excelGroup.GET("/download", middlewares.AuthJWT(), excelDc.Download)
+		}
+	}
+}
