@@ -15,7 +15,7 @@ type ExcelRequest struct {
 func ExcelSave(data interface{}, c *gin.Context) map[string][]string {
 
 	rules := govalidator.MapData{
-		"column": []string{"required", "alpha_num"},
+		"column": []string{"required"},
 		"row":    []string{"required"},
 		"data":   []string{"required"},
 		"table":  []string{"required"},
@@ -23,7 +23,6 @@ func ExcelSave(data interface{}, c *gin.Context) map[string][]string {
 	messages := govalidator.MapData{
 		"column": []string{
 			"required:列为必填项",
-			"alpha_num:列只允许数字和英文",
 		},
 		"row": []string{
 			"required:行为必镇项",
