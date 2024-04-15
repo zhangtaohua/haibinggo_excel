@@ -219,37 +219,37 @@ func (ctrl *ExcelsController) Download(c *gin.Context) {
 	f.SetCellValue("Sheet1", "G1", "供应商")
 
 	f.SetCellValue("Sheet1", "H1", "采购员")
-	f.SetCellValue("Sheet1", "I1", "入库时间")
-	f.SetCellValue("Sheet1", "J1", "入库单价(¥)")
+	f.SetCellValue("Sheet1", "I1", "入库员")
+	f.SetCellValue("Sheet1", "J1", "运营员")
 
-	f.SetCellValue("Sheet1", "K1", "刷机费(¥)")
-	f.SetCellValue("Sheet1", "L1", "耗材费(¥)")
-	f.SetCellValue("Sheet1", "M1", "附加费(¥)")
-	f.SetCellValue("Sheet1", "N1", "物流费(¥)")
-	f.SetCellValue("Sheet1", "O1", "销售数量")
-	f.SetCellValue("Sheet1", "P1", "总成本(¥)")
-	f.SetCellValue("Sheet1", "Q1", "销售币种")
+	f.SetCellValue("Sheet1", "K1", "入库时间")
+	f.SetCellValue("Sheet1", "L1", "入库单价(¥)")
+	f.SetCellValue("Sheet1", "M1", "参考价(¥)")
 
-	f.SetCellValue("Sheet1", "R1", "汇率(¥)")
-	f.SetCellValue("Sheet1", "S1", "销售单价")
-	f.SetCellValue("Sheet1", "T1", "销售单价(¥)")
-	f.SetCellValue("Sheet1", "U1", "销售总价(¥)")
-	f.SetCellValue("Sheet1", "V1", "利润(¥)")
-	f.SetCellValue("Sheet1", "W1", "销售平台")
+	f.SetCellValue("Sheet1", "N1", "刷机费(¥)")
+	f.SetCellValue("Sheet1", "O1", "耗材费(¥)")
+	f.SetCellValue("Sheet1", "P1", "附加费(¥)")
+	f.SetCellValue("Sheet1", "Q1", "物流费(¥)")
+	f.SetCellValue("Sheet1", "R1", "销售数量")
+	f.SetCellValue("Sheet1", "S1", "总成本(¥)")
+	f.SetCellValue("Sheet1", "T1", "销售币种")
 
-	f.SetCellValue("Sheet1", "X1", "店铺名称")
-	f.SetCellValue("Sheet1", "Y1", "销售平台订单号")
-	f.SetCellValue("Sheet1", "Z1", "物流平台")
-	f.SetCellValue("Sheet1", "AA1", "物流单号")
+	f.SetCellValue("Sheet1", "U1", "汇率(¥)")
+	f.SetCellValue("Sheet1", "V1", "销售单价")
+	f.SetCellValue("Sheet1", "W1", "销售单价(¥)")
+	f.SetCellValue("Sheet1", "X1", "销售总价(¥)")
+	f.SetCellValue("Sheet1", "Y1", "利润(¥)")
+	f.SetCellValue("Sheet1", "Z1", "销售平台")
 
-	f.SetCellValue("Sheet1", "AB1", "入库员")
+	f.SetCellValue("Sheet1", "AA1", "店铺名称")
+	f.SetCellValue("Sheet1", "AB1", "销售平台订单号")
+	f.SetCellValue("Sheet1", "AC1", "物流平台")
+	f.SetCellValue("Sheet1", "AD1", "物流单号")
 
-	f.SetCellValue("Sheet1", "AC1", "运营员")
-
-	f.SetCellValue("Sheet1", "AD1", "备注")
-	f.SetCellValue("Sheet1", "AE1", "创建时间")
-	f.SetCellValue("Sheet1", "AF1", "更新时间")
-	f.SetCellValue("Sheet1", "AG1", "删除时间")
+	f.SetCellValue("Sheet1", "AE1", "备注")
+	f.SetCellValue("Sheet1", "AF1", "创建时间")
+	f.SetCellValue("Sheet1", "AG1", "更新时间")
+	f.SetCellValue("Sheet1", "AH1", "删除时间")
 
 	users := user.All()
 	for rowIndex, rowData := range excelAll {
@@ -270,49 +270,51 @@ func (ctrl *ExcelsController) Download(c *gin.Context) {
 			}
 		}
 		f.SetCellValue("Sheet1", "H"+rowId, username)
-		f.SetCellValue("Sheet1", "I"+rowId, rowData.F)
-		f.SetCellValue("Sheet1", "J"+rowId, rowData.G)
-
-		f.SetCellValue("Sheet1", "K"+rowId, rowData.H)
-		f.SetCellValue("Sheet1", "L"+rowId, rowData.I)
-		f.SetCellValue("Sheet1", "M"+rowId, rowData.J)
-		f.SetCellValue("Sheet1", "N"+rowId, rowData.K)
-		f.SetCellValue("Sheet1", "O"+rowId, rowData.L)
-		f.SetCellValue("Sheet1", "P"+rowId, rowData.M)
-		f.SetCellValue("Sheet1", "Q"+rowId, rowData.N)
-
-		f.SetCellValue("Sheet1", "R"+rowId, rowData.O)
-		f.SetCellValue("Sheet1", "S"+rowId, rowData.P)
-		f.SetCellValue("Sheet1", "T"+rowId, rowData.Q)
-		f.SetCellValue("Sheet1", "U"+rowId, rowData.R)
-		f.SetCellValue("Sheet1", "V"+rowId, rowData.S)
-		f.SetCellValue("Sheet1", "W"+rowId, rowData.T)
-
-		f.SetCellValue("Sheet1", "X"+rowId, rowData.U)
-		f.SetCellValue("Sheet1", "Y"+rowId, rowData.V)
-		f.SetCellValue("Sheet1", "Z"+rowId, rowData.W)
-		f.SetCellValue("Sheet1", "AA"+rowId, rowData.X)
 
 		for _, user := range users {
 			if cast.ToString(user.ID) == rowData.Y {
 				username = user.NickName
 			}
 		}
-
-		f.SetCellValue("Sheet1", "AB"+rowId, username)
+		f.SetCellValue("Sheet1", "I"+rowId, username)
 
 		for _, user := range users {
 			if cast.ToString(user.ID) == rowData.Z {
 				username = user.NickName
 			}
 		}
-		f.SetCellValue("Sheet1", "AC"+rowId, username)
+		f.SetCellValue("Sheet1", "J"+rowId, username)
 
-		f.SetCellValue("Sheet1", "AD"+rowId, rowData.AA)
+		f.SetCellValue("Sheet1", "K"+rowId, rowData.F)
+		f.SetCellValue("Sheet1", "L"+rowId, rowData.G)
+		f.SetCellValue("Sheet1", "M"+rowId, rowData.AB)
+		f.SetCellValue("Sheet1", "N"+rowId, rowData.H)
+		f.SetCellValue("Sheet1", "O"+rowId, rowData.I)
+		f.SetCellValue("Sheet1", "P"+rowId, rowData.J)
+		f.SetCellValue("Sheet1", "Q"+rowId, rowData.K)
 
-		f.SetCellValue("Sheet1", "AE"+rowId, rowData.CreatedAt)
-		f.SetCellValue("Sheet1", "AF"+rowId, rowData.UpdatedAt)
-		f.SetCellValue("Sheet1", "AG"+rowId, rowData.DeletedAt)
+		f.SetCellValue("Sheet1", "R"+rowId, rowData.L)
+		f.SetCellValue("Sheet1", "S"+rowId, rowData.M)
+		f.SetCellValue("Sheet1", "T"+rowId, rowData.N)
+		f.SetCellValue("Sheet1", "U"+rowId, rowData.O)
+		f.SetCellValue("Sheet1", "V"+rowId, rowData.P)
+		f.SetCellValue("Sheet1", "W"+rowId, rowData.Q)
+
+		f.SetCellValue("Sheet1", "X"+rowId, rowData.R)
+		f.SetCellValue("Sheet1", "Y"+rowId, rowData.S)
+		f.SetCellValue("Sheet1", "Z"+rowId, rowData.T)
+		f.SetCellValue("Sheet1", "AA"+rowId, rowData.U)
+
+		f.SetCellValue("Sheet1", "AB"+rowId, rowData.V)
+
+		f.SetCellValue("Sheet1", "AC"+rowId, rowData.W)
+
+		f.SetCellValue("Sheet1", "AD"+rowId, rowData.X)
+
+		f.SetCellValue("Sheet1", "AE"+rowId, rowData.AA)
+		f.SetCellValue("Sheet1", "AF"+rowId, rowData.CreatedAt)
+		f.SetCellValue("Sheet1", "AG"+rowId, rowData.UpdatedAt)
+		f.SetCellValue("Sheet1", "Ah"+rowId, rowData.DeletedAt)
 	}
 
 	// 确保目录存在，不存在创建
