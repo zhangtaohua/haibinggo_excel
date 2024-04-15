@@ -33,7 +33,11 @@ func (userModel *User) Create() {
 
 // ComparePassword 密码是否正确
 func (userModel *User) ComparePassword(_password string) bool {
-	return hash.BcryptCheck(_password, userModel.Password)
+	if len(userModel.Password) < 32 {
+		return _password == userModel.Password
+	} else {
+		return hash.BcryptCheck(_password, userModel.Password)
+	}
 }
 
 func (userModel *User) Save() (rowsAffected int64) {

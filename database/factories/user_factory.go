@@ -18,7 +18,7 @@ func MakeUsers(times int) []user.User {
 		Name:     "yanghaibing",
 		NickName: "杨海冰",
 		Email:    "yanghaibing@163.com",
-		Phone:    "15986770126",
+		Phone:    "15986670126",
 		Password: "SeCrEt123456",
 	}
 
@@ -28,7 +28,7 @@ func MakeUsers(times int) []user.User {
 		Name:     "admin",
 		NickName: "管理员",
 		Email:    "admin@163.com",
-		Phone:    "1562288891",
+		Phone:    "19954347299",
 		Password: "SeCrEt123456",
 	}
 
@@ -38,7 +38,7 @@ func MakeUsers(times int) []user.User {
 		Name:     "finance",
 		NickName: "财务",
 		Email:    "finance@163.com",
-		Phone:    "1562288892",
+		Phone:    "13077912310",
 		Password: "SeCrEt",
 	}
 
